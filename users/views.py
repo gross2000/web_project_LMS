@@ -5,9 +5,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework import generics
 from users.models import User, Payment
 from users.serializers import UserSerializer, PaymentSerializer, PaymentFilter
+from rest_framework.filters import OrderingFilter
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """Список всех пользователей"""
     queryset = User.objects.all()
     serializer_class = UserSerializer
     filter_backends = [
@@ -31,8 +33,9 @@ class UserCreateAPIView(CreateAPIView):
 class PaymentListCreateAPIView(generics.ListCreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = PaymentFilter
+    ordering_fields = ('date',)
 
 
 class PaymentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
