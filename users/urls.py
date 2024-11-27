@@ -7,7 +7,8 @@ from users.apps import UsersConfig
 from users.views import (
     UserViewSet,
     PaymentListCreateAPIView,
-    PaymentRetrieveUpdateDestroyAPIView, UserCreateAPIView,
+    PaymentRetrieveUpdateDestroyAPIView,
+    UserCreateAPIView,
 )
 
 app_name = UsersConfig.name
