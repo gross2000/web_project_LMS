@@ -22,6 +22,9 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 
+STRIPE_API_KEY = "django-insecure-p!q_@pd_-lypq=i2s-b&tivtp*p79&34q=dfw26rz#6#k$lcjc"
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -35,6 +38,7 @@ INSTALLED_APPS = [
     "users",
     "lms",
     "rest_framework_simplejwt",
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
