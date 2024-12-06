@@ -3,6 +3,10 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from lms.models import Course, Lesson
 
+
+NULLABLE = {"blank": True, "null": True}
+
+
 class User(AbstractUser):
     username = None
 
@@ -46,6 +50,7 @@ class Payment(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="payments"
     )
     payment_date = models.DateTimeField(auto_now_add=True)
+
     paid_course = models.ForeignKey(
         Course,
         on_delete=models.SET_NULL,
@@ -60,12 +65,16 @@ class Payment(models.Model):
         blank=True,
         null=True,
     )
+
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, verbose_name="Сумма оплаты"
     )
     payment_method = models.CharField(
         max_length=10, choices=PAYMENT_METHOD_CHOICES, verbose_name="Способ оплаты"
     )
+
+    session_id = models.CharField(max_length=255, verbose_name="ID сессии", **NULLABLE)
+    payment_url = models.URLField(max_length=450, verbose_name="Ссылка на оплату", **NULLABLE)
 
     class Meta:
         verbose_name = "Платеж"
