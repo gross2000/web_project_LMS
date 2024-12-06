@@ -42,3 +42,22 @@ class PaymentListCreateAPIView(generics.ListCreateAPIView):
 class PaymentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
+
+
+
+class PaymentCreateAPIView(CreateAPIView):
+    """Эндпоинт создания оплаты"""
+
+    serializer_class = PaymentSerializer
+    queryset = Payment.objects.all()
+
+    def perform_create(self, serializer):
+        payment = serializer.save()
+        payment.user = self.request.user
+        stripe_product_id = create_stripe_product(payment)
+        payment.amount = payment.amount
+        price = create_stripe_price(stripe_product_id=stripe_product_id, amount=payment.amount)
+        session_id, payment_link = create_stripe_session(price=price)
+        payment.session_id = session_id
+        payment.payment_url = payment_link
+        payment.save()
