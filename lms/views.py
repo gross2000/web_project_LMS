@@ -21,6 +21,8 @@ from rest_framework.views import APIView
 from config.settings import EMAIL_HOST_USER
 from lms.paginators import CustomPagination
 from rest_framework.decorators import api_view, action
+from lms.tasks import mail_update_course_info
+
 
 
 class CourseViewSet(ModelViewSet):
@@ -40,6 +42,11 @@ class CourseViewSet(ModelViewSet):
         course = serializer.save()
         course.owner = self.request.user
         course.save()
+
+    def perform_update(self, serializer):
+        updated_course = serializer.save()
+        mail_update_course_info.delay(updated_course)
+        updated_course.save()
 
     def get_permissions(self):
         """
