@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     "users",
     "lms",
     "rest_framework_simplejwt",
-    'drf_yasg'
+    'drf_yasg',
+    'django_celery_beat'
 ]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -176,3 +178,23 @@ if CACHE_ENABLED:
             "TIMEOUT": 300 # Ручная регулировка времени жизни кеша в секундах, по умолчанию 300
         }
     }
+
+
+
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+CELERY_BEAT_SCHEDULE = {
+    "check_last_login": {
+        "task": "lms.tasks.check_last_login",  # Путь к task
+        "schedule": timedelta(weeks=4),  # Период выполнения задачи
+    }
+}

@@ -69,6 +69,11 @@ class Lesson(models.Model):
 class Subscription(models.Model):
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='пользователь')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс')
+    sign_up = models.BooleanField(default=False, verbose_name="Подписка")
+
+    def __str__(self):
+        return f"{self.user}: ({self.course})"
+
 
     class Meta:
         verbose_name = 'подписка'
